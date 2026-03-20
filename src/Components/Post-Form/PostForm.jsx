@@ -1,0 +1,147 @@
+import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { Button, Input, RTE, Select } from "..";
+import appwriteService from '../../AppWrite/files'
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+export default function PostForm({ post }) {
+    const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
+        defaultValues: {
+            title: post?.title || "",
+            slug: post?.$id || "",
+            content: post?.content || "",
+            status: post?.status || "active",
+        },
+    });
+
+    const navigate = useNavigate();
+    const userData = useSelector((state) => state.auth.userData);
+
+   const submit = async (data) => {
+
+  try {
+
+    // ✅ EDIT POST
+    if (post) {
+
+      let fileId = post.featuredImage;
+
+      if (data.image?.[0]) {
+        const file = await appwriteService.uploadFile(data.image[0]);
+
+        if (file) {
+          await appwriteService.deleteFile(post.featuredImage);
+          fileId = file.$id;
+        }
+      }
+
+      const updatedPost = await appwriteService.updatePost(post.$id, {
+        title: data.title,
+        content: data.content,
+        status: data.status,
+        featuredImage: fileId,
+      });
+      alert("✅ Post updated successfully");
+
+      if (updatedPost) {
+        navigate('/');
+      }
+      return;
+    }
+
+    // ✅ CREATE POST
+    const file = await appwriteService.uploadFile(data.image[0]);
+
+    if (file) {
+      const dbPost = await appwriteService.createPost({
+        ...data,
+        featuredImage: file.$id,
+        userId: userData.$id,
+      });
+      alert("✅ Blog submitted successfully");
+
+      if (dbPost) {
+        navigate('/');
+      }
+    }
+
+  } catch (err) {
+    console.log(alert("Somthing Went error:"),err)
+};
+   }
+    const slugTransform = useCallback((value) => {
+        if (value && typeof value === "string")
+            return value
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-zA-Z\d\s]+/g, "-")
+                .replace(/\s/g, "-");
+
+        return "";
+    }, []);
+
+    React.useEffect(() => {
+        const subscription = watch((value, { name }) => {
+            if (name === "title") {
+                setValue("slug", slugTransform(value.title), { shouldValidate: true });
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [watch, slugTransform, setValue]);
+
+    return (
+        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+            <div className="w-2/3 px-2">
+                <Input
+                    label="Title :"
+                    placeholder="Title"
+                    className="mb-4"
+                    {...register("title", { required: true })}
+                />
+                <Input
+                    label="Slug :"
+                    placeholder="Slug"
+                    className="mb-4"
+                    {...register("slug", { required: true })}
+                    onInput={(e) => {
+                        setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
+                    }}
+                />
+                <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
+            </div>
+            <div className="w-1/3 px-2">
+                <Input
+                    label="Featured Image :"
+                    type="file"
+                    className="mb-4"
+                    accept="image/png, image/jpg, image/jpeg, image/gif"
+                    {...register("image", { required: !post })}
+                />
+                {post && (
+                    <div className="w-full mb-4">
+                        <img
+                            src={appwriteService.getFileView(post.featuredImage)}
+                            alt={post.title}
+                            className="rounded-lg"
+                        />
+                    </div>
+                )}
+                <Select
+                    options={["active", "inactive"]}
+                    label="Status"
+                    className="mb-4"
+                    {...register("status", { required: true })}
+                />
+                <Button
+                    type="submit"
+                    className="w-full bg-green-800 py-1">
+                    {post ? "Update" : "Submit"}
+                </Button>
+
+
+
+            </div>
+        </form>
+ )}
