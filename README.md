@@ -1,16 +1,41 @@
-# React + Vite
+React Appwrite Blog
+A modern full-stack blog web application built using React and Appwrite. This project allows users to create, edit, and manage blog posts with authentication, rich text editing, and image uploads.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Features
+User Authentication (Login / Signup)
+Create, Edit and Delete Blog Posts
+Rich Text Editor Integration (TinyMCE)
+Image Upload with Appwrite Storage
+Post Status Control (Active / Inactive)
+Responsive UI Design
+Real-time Content Management
+🛠️ Tech Stack
+React (Frontend)
+React Router
+Redux Toolkit
+Appwrite (Backend as a Service)
+TinyMCE Editor
+Tailwind CSS
+📸 Screenshots
+Add project screenshots here
 
-Currently, two official plugins are available:
+⚙️ Installation
+git clone (https://github.com/Shikhar-Dewangan/React-Appwrite-Blog.git)
+cd react-appwrite-blog
+npm install
+npm run dev
+🌐 Environment Variables
+Create a .env file and add:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+VITE_APPWRITE_URL=
+VITE_APPWRITE_PROJECT_ID=
+VITE_APPWRITE_DATABASE_ID=
+VITE_APPWRITE_COLLECTION_ID=
+VITE_APPWRITE_BUCKET_ID=
+🎯 Future Improvements
+Post Like / Comment System
+User Profile Dashboard
+Search and Filter Posts
+Performance Optimization
+📄 License
+This project is built for learning and portfolio purposes.
